@@ -18,3 +18,10 @@ nytprof.out
 *.o
 *.bs
 /_eumm/
+.DS_Store
+*~
+*.swp
+*.swo
+*.dSYM
+
+
