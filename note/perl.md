@@ -287,5 +287,48 @@ if (! open LOG, '>>', 'logfile') {
 use autodie;
 ```
 
-# 使用文件句柄
+## 使用文件句柄
+
+```
+if (! open PASSWD, "/etc/passwd") {
+    die "How did you get logged in? ($!)";
+}
+
+while (<PASSWD>) {
+    chomp;
+    # ...
+}
+```
+
+## 改变默认的文件输出句柄
+
+```
+select LOG_FILE
+```
+
+```
+select LOG;
+$| = 1; # 不要将 LOG 的内容保留在缓冲区
+select STDOUT;
+# ...
+print LOG "This gets written to the LOG at once!\n";
+```
+
+## 重新打开标准文件句柄
+
+```
+# 将错误信息写到错误日志中
+if (! open STDERR, '>>', '/home/work/error.log') {
+    die "Can't open error log for append: $!";
+}
+```
+
+在重新打三个系统文件句柄STDIN, STDOUT, STDERR 失败时, perl 会找回原先的文件句柄.
+
+## 用 say 来输出(自动加换行)
+
+## 标量变量中的文件句柄
+
+# 第六章 哈希
+
 
