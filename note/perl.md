@@ -124,7 +124,7 @@ undef 既不是数字也不是字符串,它完全是另一种类型的标题值.
 
 ### 强制指定标量上下文
 
-### 列表上下文中的 <STDIN>
+### 列表上下文中的 \<STDIN\>
 
 # 子程序
 
@@ -251,16 +251,41 @@ printf "The items are:\n" . ("%10s\n" x @items), @items;
 
 ## 文件句柄(filehandle)
 
+- 6个特殊的文件句柄是 perl 保留的,分别是: STDIN, STDOUT, STDERR, DATA, ARGV以及 ARGVOUT.
 
+## 打开文件句柄
 
+```
+open R_FP, '<', $file_name;
+open W_FP, '>', $file_name;
+open LOG, '>>:encoding(UTF-8)', &logfiel_name();
+```
 
+## 以二进制方式读写文件句柄
 
+## 有问题的文件句柄.
 
+## 关闭文件句柄
 
+```
+close LOG;
+```
 
+## 用 die 处理致命的错误
 
+```
+if (! open LOG, '>>', 'logfile') {
+    die "Can't create logfile: $!";
+}
+```
 
+## 用 warn 送出警告信息
 
+## 自动检测致命错误
 
+```
+use autodie;
+```
 
+# 使用文件句柄
 
