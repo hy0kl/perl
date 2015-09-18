@@ -331,4 +331,27 @@ if (! open STDERR, '>>', '/home/work/error.log') {
 
 # 第六章 哈希
 
+## 访问哈希元素
+
+```
+$hash{$some_key};
+```
+
+## 访问整个哈希
+
+```
+%some_hash = ('foo', 35, 'bar', 12.4, 2.5, 'hello',
+    'wilam', 1.72e30, 'betty', "bye\n");
+```
+
+## 胖箭头
+
+```
+my %last_name = (
+    'fred' => 'flintstone',
+    'dino' => undef,
+    'betty'=> 'rubble',
+);
+```
+
 
