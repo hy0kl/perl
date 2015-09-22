@@ -354,4 +354,58 @@ my %last_name = (
 );
 ```
 
+## 哈希函数
+
+### keys 和 values 函数
+
+```
+my %hash = ('a' => 1, 'b' => 2, 'c' => 3,);
+my @k = keys %hash;
+my @v = values %hash;
+```
+
+- 只要在取得键与值这两个动作之间不修改哈希,顺序是一致.
+- 在标量上下文中,这两个函数返回哈希元素(键-值对)的个数.
+
+```
+my $count = keys %hash;
+```
+
+### each 函数
+
+```
+while (($key, $value) = echo %hash) {
+    print "$key => $value\n";
+}
+```
+
+- each 返回的键一值对与 keys和values 函数返回的顺序一致
+
+```
+foreach $key (sort keys %hash) {
+    $value = $hash{$key};
+    # ...
+}
+```
+
+### exists 函数
+
+### delete 函数
+
+### %ENV 哈希
+
+# 第七章 漫游正则表达式王国
+
+
+
+
+
+
+
+
+
+
+
+
+
 
