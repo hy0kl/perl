@@ -28,3 +28,4 @@ print $t, "\n";
 print @ARGV, "\n";
 print "@ARGV\n";
 print $ARGV[0], "\n";
+print $ENV{'PATH'}, "\n";
