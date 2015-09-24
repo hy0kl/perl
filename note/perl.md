@@ -542,5 +542,63 @@ $copy =~ s/\d+ribs?/10 ribs/;
 
 ## 大小写转换
 
+```
+$_ = "I saw Barney with Fred.";
+s/(fred|barney)/\U$1/gi;    # $_ 现在成了 "I saw FARNEY with FRED."
+
+s/(fred|barney)/\L$1/gi;    # $_ 现在成了 "I saw farney with fred."
+
+默认情况下,会影响之后全部的(替换)字符串.可以用 \E 关闭大小写转换在功能:
+s/(\w+) with (\w+)/\U$2\E with $1/i;    # $_ 替换为 "I saw FRED with barney."
+
+使用小写形式(\l与\u)时,它们只会影响紧跟其后的第一个字符:
+s/(fred|barney)/\u$1/gi;    # $_ 替换后为 "I saw FRED with Barney."
+
+同时使用\u与\L来表示"后续字符全部转为小写的,但首字母大写":
+s/(fred|barney)/\u\L$1/gi;  # $_ 现在成了 "I saw Fred with Barney."
+
+替换的大小写转换同样适用于任何双引号的字符串中:
+print "Hello, \L\u$name\E, would you like to play a game?\n";
+```
+
+## split 操作符
+
+```
+my @fields = split /separator/, $string;
+```
+
+# join 函数
+
+```
+my $result = join $glue, @pieces;
+
+join 的第一个参数是字符串,而不是模式.
+```
+
+## 非贪婪量词
+
+`.+?` 它会匹配一个以上的字符,但越短越了.
+
+```
+加号的非贪婪版本是 +?
+星号的非贪婪版本是 *?
+花括号的非贪婪版本是 {n,m}?
+问号的非贪婪版本是 ??
+```
+
+## 跨行的模式匹配
+
+模式加上 /m 修饰符之后,可以用它们匹配字符串内的每一行(把 m 看作多行(multipl lines)).
+
+## 一次更新多个文件
+p192
+
+
+
+
+
+
+
+
 
 
