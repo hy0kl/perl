@@ -784,21 +784,292 @@ DBD(Database Driver, 数据库驱动程序)
 -A | 最后一次被访问后至今的天数
 -C | 最后一次文件节点编号(inode)被变更至今的天数
 
+## 测试同一个文件的多项属性
 
+```
+if (-r $file and -w $file) {
+    # code
+}
 
+# 虚拟文件句柄提高效率
+if (-r $file and -w _) {
+    # code
+}
+```
 
+## 栈式文件测试操作
 
+## stat 和 lstat 函数
 
+```
+my($dev, $ino, $mode, $nlink, $uid, $gid, $rdev,
+    $size, $atime, $mtime, $ctime, $blksize, $blocks)
+        = stat($filename);
+```
 
+## localtime 函数
 
+```
+my($sec, $min, $hour, $day, $mon, $year, $wday, $yday, $isdst)
+    = localtime $timestamp;
+```
 
+## 按位运算(bitwise operator)操作符
 
+`& | ^  >> << ~`
 
+# 第十三章 目录操作
 
+## 在目录树中移动
 
+`chdir '/etc' or die "Can't chdir to /etc: $!"`
 
+## 文件名通配
 
+`my @all_files_including_dot = glob '.* *'`
 
+## 文件名通配的另一种语法
 
+`my @all_files = <*> # 效果和这样的写法完全一致: my @all_files = glob "*"`
 
+## 目录句柄(directory handle)
+
+```
+my $dir_to_process = '/etc';
+opendir my $dh, $dir_to_process or die "Can't open $dir_to_process: $!";
+foreach $file (readdir $dh) {
+    print "one file in $dir_to_process is $file\n";
+}
+closedir $dh;
+```
+
+```
+opendir my $somedir, $dirname or die "Can't open $dirname: $!";
+while (my $name = readdir $somedir) {
+    next if $name =~ /^\./;             # 跳过名称以点号开头的文件
+    $name = "$dirname/$name";           # 拼合为完整的路径
+    next unless -f $name and -r $name   # 只需要可读的文件
+    # some logic
+}
+```
+
+可移植的
+
+```
+use File::Spec::Functions;
+
+opendir my $somedir, $dirname or die "Can't open $dirname: $!";
+while (my $name = readdir $somedir) {
+    next if $name =~ /^\./;             # 跳过名称以点号开头的文件
+    $name = catfile($dirname, $name);   # 拼合为完整的路径
+    next unless -f $name and -r $name   # 只需要可读的文件
+    # some logic
+}
+```
+
+## 递归访问目录
+
+`File::Find`
+
+## 文件或目录的操作
+
+### 删除文件
+
+```
+unlink 'slate', 'bedrock', 'lava';
+unlink qw(slate, bedrock, lava);
+
+unlink glob '*.o';
+```
+
+unlink 的返回值代表成功删除的文件数目.
+
+### 重命名文件
+
+`rename 'old', 'new';`
+
+### 链接与文件
+
+```
+link 'chicken', 'egg'
+    or warn "Can't link chicken to egg: $!";
+
+symlink 'dodgson', 'carroll'
+    or warn "Can't symlink dodgson to carroll: $!";
+```
+
+### 创建和删除目录
+
+```
+mkdir 'fred', 0755 or warn "Can't make fred directory: $!";
+
+rmdir $dir or warn "Can't rmdir $dir: $!";
+```
+
+### 修改权限
+
+```
+chmod 0755, 'fred', 'barney';
+```
+
+### 修改隶属关系
+
+```
+my $user  = 1004;
+my $group = 100;
+chown $usr, $group, glob '*.o';
+
+defined(my $user  = getpwnam 'merlyn') or die 'bad user';
+defined(my $group = getgrnam 'users') or die 'bad group';
+chown $user, $group, glob '/home/merlyn';
+```
+
+### 修改时间戳
+
+```
+my $now = time;
+my $ago = $now - 24 * 3600; # 一天的秒数
+utime $new, $ago, glob '*'; # 将最后访问时间改为当前时间,最后修改时间改为一天前
+```
+
+# 第十四章 字符串与排序
+
+## 用 index 查找子字符串
+
+`$where = index($big, $small);`
+
+在 $big 字符串中寻找 $small 字符串前次出现的地方,并返回一个整数表示第一个字符的匹配位置,返回的字符位置是从零算起.如果无法找到子串,返回 -1.可选的第三个参数来指定开始搜索的地方.
+
+搜索字符串最后出现的位置:
+`my $last_slash = rindex('/etc/password', '/'); # 值为4`
+
+rindex 函数也有可选的第三个参数,但是用来限定返回值的上限.
+
+## 用 substr 操作子字符串
+
+`my $part = substr($string, $initial_postion, $lenght);`
+
+三个参数:一个原始字符串,一个从零起算的超始位置,以及子字符串的长度.返回找到的子字符串.第三个参数可选
+
+## 用 sprintf 格式化字符串
+
+## 用 sprintf 格式化金额数字
+
+## 非十进制数字字符串的转换
+
+```
+hex($str);
+oct($str);
+```
+
+## 高级排序
+
+```
+sub any_sort_sub {      # 实际上这么写不能正确工作,这里只是为了方便说明问题
+    my($a, $b) = @_;    # 声明两个变量并给它们赋值
+    # 在这里开始比较 $a 和 $b
+    ...
+}
+```
+
+## 按哈希值排序
+
+## 按多个键排序
+
+# 第十五章 智能匹配与 given-when 结构
+
+## 智能匹配操作符
+
+`use 5.010001 # 至少是 5.10.1 版`
+
+智能匹配操作符 ~~ 会根据两边的操作数的数据类型自动判断该用何种方式进行比较或匹配.
+
+## 智能匹配操作的优先级
+
+范例 | 匹配类型
+---- | -------
+%a ~~ %b | 哈希的键是否一致
+%a ~~ @b 或 @a ~~ %b | %a 中的至少一个键在列表 @b 中
+%a ~~ /Fred/ 或 /Fred/ ~~ %b | 至少有一个键匹配给定的模式
+'Fred' ~~ %a | 是否存在 $a{Fred}
+@a ~~ @b | 数组是否相同
+@a ~~ /Fred/ | @a 中至少有一个元素匹配模式
+$name ~~ undef $name | $name 没有定义
+$name ~~ /Fred/ | 模式匹配
+123 ~~ '123.0' | 数值和 "numish" 类型的字符串是否相等
+'Fred' ~~ 'Fred' | 字符串是否相同
+123 ~~ 456 | 数值是否相等
+
+## given 语句
+
+given-when 控制结构能够根据 given 后面的参数执行某个条件对应的语句块.
+
+```
+use 5.010001;
+
+given ($ARGV[0]) {
+    when ('Fred')   {say 'Name is Fred.'}
+    when (/fred/i)  {say 'Name has fred in it.'}
+    when (/\AFred/) {say 'Name starts with Fred.'}
+    default         {say 'I do NOT see a Fred.'}
+}
+```
+
+支持 continue, break.
+
+# 第十六章 进程管理
+
+## system 函数
+
+```
+system 'date';
+system 'ls -l $HOME';
+```
+
+## 避免使用 shell
+
+## 环境变量
+
+## exec 函数
+
+system 函数会创建子进程,子进程会在 perl 睡眠期间执行任务.而 exec 函数却导致 perl 进程自己去执行任务.
+
+## 用反引号捕获输出结果
+
+还可以使用更为一般化的引起操作 qx().
+
+## 在列表上下文中使用反引号
+
+## 用 IPC::System::Simple 执行外部进程
+
+## 通过文件句柄执行外部进程
+
+```
+open DATE, 'date |' or die "Can't pipe from date: $!";
+open MAIL, '| mail merlyn' or die "Can't pipe to mail: $!";
+```
+
+如果需要读取用的文件句柄,就用 - |,如果需要写入用的文件句柄,就用 | -, - 的位置就好比是要执行的命令管道传递中的位置.
+
+## 用 fork 进行深入和复杂的工作
+
+## 发送及接收信号
+
+# 第十七章 高级 perl 技巧
+
+## 切片
+
+## 数组切片
+
+## 哈希切片
+
+## 捕获错误
+
+## 用 eval
+
+## 更为高级的错误处理
+
+## 用 grep 筛选列表
+
+## 用 map 把列表元素变形
 
